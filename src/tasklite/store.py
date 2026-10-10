@@ -204,3 +204,21 @@ class TaskStore:
                 
                 cur = conn.execute(query, params)
                 return [self._row_to_job(row) for row in cur.fetchall()]
+
+    def get_stats(self, queue: Optional[str] = None) -> Dict[str, int]:
+        with contextlib.closing(self.get_connection()) as conn:
+            with conn:
+                query = "SELECT status, count(*) as count FROM jobs"
+                params = []
+                if queue:
+                    query += " WHERE queue = ?"
+                    params.append(queue)
+                query += " GROUP BY status"
+                cur = conn.execute(query, params)
+                stats = {status.value: 0 for status in JobStatus}
+                total = 0
+                for row in cur.fetchall():
+                    stats[row['status']] = row['count']
+                    total += row['count']
+                stats['total'] = total
+                return stats

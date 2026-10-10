@@ -35,3 +35,11 @@ def test_cli_worker_burst():
     runner.invoke(cli, ['enqueue', '--handler', 'mock_email'])
     worker_res = runner.invoke(cli, ['worker', '--burst'])
     assert worker_res.exit_code == 0
+
+def test_cli_stats():
+    runner = CliRunner()
+    runner.invoke(cli, ['enqueue', '--handler', 'mock_email'])
+    res = runner.invoke(cli, ['stats'])
+    assert res.exit_code == 0
+    assert '"total"' in res.output
+    assert '"queued"' in res.output

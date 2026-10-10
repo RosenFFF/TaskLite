@@ -71,11 +71,14 @@ def schedule(handler, scheduled_at):
         raise click.Abort()
 
 @cli.command()
-def list():
+@click.option('--queue', default=None, help="Filter by queue name")
+@click.option('--status', default=None, help="Filter by status (queued/running/succeeded/failed/cancelled)")
+@click.option('--limit', default=100, type=int, help="Limit number of jobs listed")
+def list(queue, status, limit):
     store = TaskStore()
-    jobs = store.list_jobs()
+    jobs = store.list_jobs(queue=queue, status=status, limit=limit)
     for job in jobs:
-        click.echo(f"{job.id} - {job.status.value}")
+        click.echo(f"{job.id} [{job.queue}] - {job.status.value} (attempts={job.attempts}, priority={job.priority})")
 
 @cli.command()
 @click.argument('job_id')
@@ -90,8 +93,11 @@ def cancel(job_id):
         raise click.Abort()
 
 @cli.command()
-def stats():
-    pass
+@click.option('--queue', default=None, help="Filter stats by queue name")
+def stats(queue):
+    store = TaskStore()
+    st = store.get_stats(queue=queue)
+    click.echo(json.dumps(st, indent=2))
 
 if __name__ == '__main__':
     cli()
