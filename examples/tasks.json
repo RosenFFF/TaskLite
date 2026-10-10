@@ -1,0 +1,17 @@
+[
+  {
+    "handler": "mock_email",
+    "payload": {
+      "to": "dev@example.invalid",
+      "body": "Daily report ready"
+    },
+    "priority": "high"
+  },
+  {
+    "handler": "compute_summary",
+    "payload": {
+      "values": [1, 2, 3, 4, 5]
+    },
+    "priority": "normal"
+  }
+]
