@@ -115,7 +115,7 @@ class TaskStore:
                 cur = conn.execute('''
                     SELECT * FROM jobs 
                     WHERE queue = ? AND status = 'queued' AND scheduled_at <= ?
-                    ORDER BY priority DESC, created_at ASC
+                    ORDER BY priority ASC, created_at ASC
                     LIMIT 1
                 ''', (queue, now_iso))
                 row = cur.fetchone()
