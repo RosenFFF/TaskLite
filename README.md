@@ -20,7 +20,7 @@ pip install -e .
 tasklite enqueue my_handler --payload '{"data": "example"}'
 
 # Start a worker
-tasklite worker
+tasklite worker --queue-name default
 ```
 
 ## CLI Command Reference
